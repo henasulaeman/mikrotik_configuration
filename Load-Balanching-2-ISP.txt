@@ -1,0 +1,108 @@
+MULAI
+
+Judul : Load Balanching 2 ISP yang berbeda 
+
+
+Note : Dengan banyaknyak metode load balance, kadang kita bingung ingin menggunakan metode yang mana. Terlebih lagi banyak metode yang hanya dengan melihat konfigurasinya saja, kita dibuat pusing. Kali ini kita akan coba tips load balance yang cukup mudah dalam hal konfigurasi dan sangat menarik untuk dicoba. Load balance dengan metode ECMP, yang merupakan improvisasi dari metode round robin load balance.  Load balance sendiri merupakan teknik untuk menggabungkan koneksi internet lebih dari satu.
+
+Sample :
+IP Address ISP 1 : 192.168.3.1/24
+DNS			 	 : 203.142.82.222
+				   203.142.84.222
+
+IP Address ISP 2 : 192.168.145.1/24
+DNS 			 : 8.8.8.8
+				   8.8.4.4
+
+
+Rename Tentukan Interfacenya :
+1. Interfaces 
+- ether1 : ether1-ISP-1
+- ether2 : ether2-ISP-2
+- ether3 : ether3-Switch-Client
+
+2. Ip/Addresses
+- address   : 192.168.3.2/24
+  network   : 192.168.3.0
+  interface : ether1-ISP-1
+
+- address 	: 192.168.145.2/24
+  network   : 192.168.145.0
+  interface : ether2-ISP-2
+
+
+- address   : 192.168.2.1/24
+  network   : 192.168.2.0
+  interface : ether3-Switch-Client
+
+3. Ip/DNS
+- server    : 8.8.8.8
+			  8.8.4.4
+			  203.142.82.222
+			  203.142.84.222
+4. Ip/Firewall -> tab NAT 
+   Buat 2 Nat , karena ada dua koneksi ISP.
+
+- General : -Chain 		   : srcnat
+			-Out-Interface : ether1-ISP-1
+			-Action 	   : Masquarade
+
+-General : -Chain 		   : srcnat
+		   -Out-Interface  : ether1-ISP-2
+		   -Action 	   	   : Masquarade
+
+
+5.Ip/Firewall -> Mangle
+  
+  Buat 2 Mark Connection dan 2 Mark Routing
+
+Mark-Connection
+-General : Chain 			   : input
+		   In.Interface 	   : ether1-ISP-1
+-Action  : Action 	    	   : mark connection
+		   New Connection Mark : Connect-ISP-1
+
+
+-General : Chain 			   : input
+		   In.Interface 	   : ether1-ISP-2
+-Action  : Action 	    	   : mark connection
+		   New Connection Mark : Connect-ISP-2
+
+
+Mark Routing
+
+-General : Chain 			   : output
+		   Connection Mark	   : Connect-ISP-1
+-Action  : Action 	    	   : mark routing
+		   New Routing Mark    : Ke-ISP-1
+
+-General : Chain 			   : output
+		   Connection Mark	   : Connect-ISP-2
+-Action  : Action 	    	   : mark routing
+		   New Routing Mark    : Ke-ISP-2
+
+
+6. Ip/Routes
+- General : -Dst.Address  : 0.0.0.0/0
+			-Gateway 	  : 192.168.3.1
+						    192.168.145.1
+			-CheckGateway : ping
+			-Type 		  : unicast
+
+- General : -Dst.Address  : 0.0.0.0/0
+			-Gateway 	  : 192.168.3.1
+		    -CheckGateway : ping
+			-Type 		  : unicast
+			-Routing Mark : ke-ISP-1
+
+- General : -Dst.Address  : 0.0.0.0/0
+			-Gateway 	  : 192.168.145.1
+			-CheckGateway : ping
+			-Type 		  : unicast
+			-Routing Mark : ke-ISP-2
+
+
+
+
+
+SELESAI
