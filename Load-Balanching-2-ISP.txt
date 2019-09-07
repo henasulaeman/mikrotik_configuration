@@ -7,12 +7,12 @@ Note : Dengan banyaknyak metode load balance, kadang kita bingung ingin mengguna
 
 Sample :
 IP Address ISP 1 : 192.168.3.1/24
-DNS			 	 : 203.142.82.222
-				   203.142.84.222
+DNS		 : 203.142.82.222
+		   203.142.84.222
 
 IP Address ISP 2 : 192.168.145.1/24
-DNS 			 : 8.8.8.8
-				   8.8.4.4
+DNS 	         : 8.8.8.8
+		   8.8.4.4
 
 
 Rename Tentukan Interfacenya :
@@ -37,19 +37,20 @@ Rename Tentukan Interfacenya :
 
 3. Ip/DNS
 - server    : 8.8.8.8
-			  8.8.4.4
-			  203.142.82.222
-			  203.142.84.222
+	      8.8.4.4
+	      203.142.82.222
+	      203.142.84.222
+	      
 4. Ip/Firewall -> tab NAT 
    Buat 2 Nat , karena ada dua koneksi ISP.
 
-- General : -Chain 		   : srcnat
-			-Out-Interface : ether1-ISP-1
-			-Action 	   : Masquarade
+- General : -Chain: srcnat
+	    -Out-Interface : ether1-ISP-1
+-Action   : Masquarade
 
--General : -Chain 		   : srcnat
-		   -Out-Interface  : ether1-ISP-2
-		   -Action 	   	   : Masquarade
+-General : -Chain 	   : srcnat
+	   -Out-Interface  : ether1-ISP-2
+	   -Action 	   : Masquarade
 
 
 5.Ip/Firewall -> Mangle
@@ -57,49 +58,49 @@ Rename Tentukan Interfacenya :
   Buat 2 Mark Connection dan 2 Mark Routing
 
 Mark-Connection
--General : Chain 			   : input
-		   In.Interface 	   : ether1-ISP-1
--Action  : Action 	    	   : mark connection
+-General : Chain 		  : input
+		   In.Interface   : ether1-ISP-1
+-Action  : Action 	    	  : mark connection
 		   New Connection Mark : Connect-ISP-1
 
 
--General : Chain 			   : input
-		   In.Interface 	   : ether1-ISP-2
--Action  : Action 	    	   : mark connection
+-General : Chain 		  : input
+	   In.Interface   	  : ether1-ISP-2
+-Action  : Action 	    	  : mark connection
 		   New Connection Mark : Connect-ISP-2
 
 
 Mark Routing
 
--General : Chain 			   : output
-		   Connection Mark	   : Connect-ISP-1
+-General : Chain 		   : output
+	   Connection Mark	   : Connect-ISP-1
 -Action  : Action 	    	   : mark routing
-		   New Routing Mark    : Ke-ISP-1
+	   New Routing Mark        : Ke-ISP-1
 
--General : Chain 			   : output
-		   Connection Mark	   : Connect-ISP-2
+-General : Chain		   : output
+	   Connection Mark	   : Connect-ISP-2
 -Action  : Action 	    	   : mark routing
-		   New Routing Mark    : Ke-ISP-2
+	   New Routing Mark    	   : Ke-ISP-2
 
 
 6. Ip/Routes
 - General : -Dst.Address  : 0.0.0.0/0
-			-Gateway 	  : 192.168.3.1
-						    192.168.145.1
-			-CheckGateway : ping
-			-Type 		  : unicast
+	    -Gateway 	  : 192.168.3.1
+			    192.168.145.1
+	    -CheckGateway : ping
+	    -Type 	  : unicast
 
 - General : -Dst.Address  : 0.0.0.0/0
-			-Gateway 	  : 192.168.3.1
-		    -CheckGateway : ping
-			-Type 		  : unicast
-			-Routing Mark : ke-ISP-1
+	    -Gateway 	  : 192.168.3.1
+	    -CheckGateway : ping
+	    -Type 	  : unicast
+	    -Routing Mark : ke-ISP-1
 
 - General : -Dst.Address  : 0.0.0.0/0
-			-Gateway 	  : 192.168.145.1
-			-CheckGateway : ping
-			-Type 		  : unicast
-			-Routing Mark : ke-ISP-2
+	    -Gateway 	  : 192.168.145.1
+	    -CheckGateway : ping
+	    -Type 	  : unicast
+	    -Routing Mark : ke-ISP-2
 
 
 
