@@ -15,7 +15,6 @@ DNS 	         : 8.8.8.8
 		   8.8.4.4
 
 
-Rename Tentukan Interfacenya :
 1. Interfaces 
 - ether1 : ether1-ISP-1
 - ether2 : ether2-ISP-2
