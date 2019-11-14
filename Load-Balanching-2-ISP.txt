@@ -3,7 +3,11 @@ MULAI
 Judul : Load Balanching 2 ISP yang berbeda 
 
 
-Note : Dengan banyaknyak metode load balance, kadang kita bingung ingin menggunakan metode yang mana. Terlebih lagi banyak metode yang hanya dengan melihat konfigurasinya saja, kita dibuat pusing. Kali ini kita akan coba tips load balance yang cukup mudah dalam hal konfigurasi dan sangat menarik untuk dicoba. Load balance dengan metode ECMP, yang merupakan improvisasi dari metode round robin load balance.  Load balance sendiri merupakan teknik untuk menggabungkan koneksi internet lebih dari satu.
+Note : Dengan banyaknyak metode load balance, 
+kadang kita bingung ingin menggunakan metode yang mana. 
+Terlebih lagi banyak metode yang hanya dengan melihat konfigurasinya saja, 
+kita dibuat pusing. Kali ini kita akan coba tips load balance yang cukup mudah dalam hal konfigurasi dan sangat menarik untuk dicoba. Load balance dengan metode ECMP, yang merupakan improvisasi dari metode round robin load balance.  
+Load balance sendiri merupakan teknik untuk menggabungkan koneksi internet lebih dari satu.
 
 Sample :
 IP Address ISP 1 : 192.168.3.1/24
